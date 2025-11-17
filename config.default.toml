@@ -1,0 +1,7 @@
+[settings.webhook]
+url = ""
+
+[settings.requester]
+service = ""
+creator_id =  ""
+delay_ms = 60000
