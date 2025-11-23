@@ -1,6 +1,8 @@
+use std::time::Duration;
+use backon::{ExponentialBuilder, Retryable};
 use colored::Colorize;
 use eyre::Result;
-use log::{debug, error, info, trace};
+use log::{debug, error, info, trace, warn};
 use reqwest::Client;
 
 use crate::{
@@ -32,21 +34,34 @@ impl Requester {
     }
 
     async fn query(&self) -> Result<Response> {
-        let response = self
-            .client
-            .get(format!(
-                "https://kemono.cr/api/v1/{}/user/{}/profile",
-                self.config.requester.service, self.config.requester.creator_id
-            ))
-            .header("Accept", "text/css")
-            .header("Accept-Encoding", "gzip, deflate")
-            .header("Connection", "close")
-            .send()
-            .await
-            .map_err(|e| {
-                error!("failed to send request:\n{:#?}", e);
-                e
-            })?;
+        let response = (|| async {
+            self.client
+                .get(format!(
+                    "https://kemono.cr/api/v1/{}/user/{}/profile",
+                    self.config.requester.service, self.config.requester.creator_id
+                ))
+                .header("Accept", "text/css")
+                .header("Accept-Encoding", "gzip, deflate")
+                .header("Connection", "close")
+                .send()
+                .await
+        })
+        .retry(
+            ExponentialBuilder::default()
+                .with_max_times(5)
+                .with_jitter(),
+        )
+        .notify(|err: &reqwest::Error, dur: Duration| {
+            warn!(
+                "failed to send request, retrying after {:?}:\n{:#?}",
+                dur, err
+            );
+        })
+        .await
+        .map_err(|e| {
+            error!("failed to send request, exceeded max retries:\n{:#?}", e);
+            e
+        })?;
 
         trace!(
             "response headers:\n{:#?}",
