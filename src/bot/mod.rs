@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
-use serde::{Deserialize, Deserializer, Serialize, de::Error};
+use serde::de::Error;
+use serde::{Deserialize, Deserializer, Serialize};
 
 pub mod manager;
 pub mod notifier;

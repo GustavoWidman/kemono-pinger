@@ -1,14 +1,15 @@
 use std::time::Duration;
+
 use backon::{ExponentialBuilder, Retryable};
 use colored::Colorize;
 use eyre::Result;
 use log::{debug, error, info, trace, warn};
 use reqwest::Client;
 
-use crate::{
-    bot::{Response, notifier::Event},
-    utils::{config::Config, gunzip},
-};
+use crate::bot::Response;
+use crate::bot::notifier::Event;
+use crate::utils::config::Config;
+use crate::utils::gunzip;
 
 pub struct Requester {
     last: Option<Response>,

@@ -6,10 +6,9 @@ use eyre::Result;
 use log::{debug, info};
 use tokio::time::sleep;
 
-use crate::{
-    bot::{notifier::Notifier, requester::Requester},
-    utils::config::Config,
-};
+use crate::bot::notifier::Notifier;
+use crate::bot::requester::Requester;
+use crate::utils::config::Config;
 
 pub struct Manager {
     config: Config,

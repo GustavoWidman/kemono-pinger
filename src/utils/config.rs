@@ -1,5 +1,6 @@
+use std::path::PathBuf;
 use std::sync::Arc;
-use std::{path::PathBuf, time::Duration};
+use std::time::Duration;
 
 use easy_config_store::ConfigStore;
 use eyre::Result;
