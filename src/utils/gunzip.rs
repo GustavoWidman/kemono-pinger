@@ -9,9 +9,8 @@ pub async fn gunzip(response: reqwest::Response) -> Result<String> {
     if bytes.len() >= 2 && bytes[0] == 0x1f && bytes[1] == 0x8b {
         let mut decoder = flate2::read::GzDecoder::new(&bytes[..]);
         let mut decompressed = String::new();
-        decoder.read_to_string(&mut decompressed).map_err(|e| {
+        decoder.read_to_string(&mut decompressed).inspect_err(|_| {
             error!("{:?}", bytes);
-            e
         })?;
 
         Ok(decompressed)

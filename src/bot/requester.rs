@@ -76,14 +76,13 @@ impl Requester {
 
         trace!("decompressed response:\n{}", decompressed);
 
-        possible_err.map_err(|e| {
+        possible_err.inspect_err(|e| {
             error!(
                 "request returned error status {}: {}\nresponse body:\n{}",
                 e.status().unwrap_or_default().to_string().red(),
                 e.to_string().red(),
                 decompressed
             );
-            e
         })?;
 
         serde_json::from_str(&decompressed).map_err(Into::into)
@@ -105,9 +104,8 @@ impl Requester {
                             .or(old.indexed.ne(&new.indexed).then_some(Event::Indexed))
                             .unwrap_or(Event::Other)
                     })
-                    .map(|event| {
+                    .inspect(|_| {
                         self.last.replace(new);
-                        event
                     })
             })
             .unwrap_or_else(|e| Some(e.into()))

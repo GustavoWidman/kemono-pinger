@@ -49,7 +49,7 @@ impl Default for ConfigInner {
     fn default() -> Self {
         let cfg = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/config.default.toml",));
 
-        toml::from_str(&cfg).unwrap() // should be okay
+        toml::from_str(cfg).unwrap() // should be okay
     }
 }
 

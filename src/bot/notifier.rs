@@ -14,13 +14,13 @@ pub enum Event {
     Other,
 }
 
-impl Into<CreateEmbed> for Event {
-    fn into(self) -> CreateEmbed {
+impl From<Event> for CreateEmbed {
+    fn from(value: Event) -> Self {
         let builder = CreateEmbed::new()
             .timestamp(Utc::now())
             .footer(CreateEmbedFooter::new("kemono-pinger by r3dlust"));
 
-        let builder = match self {
+        match value {
             Event::Error(err) => builder
                 .color(15158332)
                 .title("error while querying")
@@ -39,9 +39,7 @@ impl Into<CreateEmbed> for Event {
                 .description(
                     "the requester has detected an update but could not make out what was updated. go check it out",
                 ),
-        };
-
-        builder
+        }
     }
 }
 
@@ -60,7 +58,7 @@ impl Notifier {
     pub async fn new(config: &Config) -> Result<Self> {
         let http = Http::new("");
         let notifier = Self {
-            webhook: Webhook::from_url(&http, &config.webhook.url.as_str()).await?,
+            webhook: Webhook::from_url(&http, config.webhook.url.as_str()).await?,
             http,
         };
 

@@ -34,7 +34,7 @@ impl Manager {
             let tick_start = Utc::now();
             debug!(
                 "starting tick at {}",
-                tick_start.format("%Y-%m-%d %H:%M:%S.%6f").to_string()
+                tick_start.format("%Y-%m-%d %H:%M:%S.%6f")
             );
 
             if let Some(event) = self.requester.tick().await {
