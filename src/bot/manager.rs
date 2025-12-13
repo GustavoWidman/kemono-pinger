@@ -49,7 +49,7 @@ impl Manager {
                 tick_duration.as_millis().to_string().cyan()
             );
 
-            let delay = self.config.requester.delay_ms.sub(tick_duration);
+            let delay = self.config.requester.delay_ms.saturating_sub(tick_duration);
 
             debug!(
                 "tick complete, sleeping for {}ms",
