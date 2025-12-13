@@ -31,6 +31,5 @@ pub struct Response {
     has_chats: bool,
     post_count: u64,
     dm_count: u64,
-    share_count: u64,
     chat_count: u64,
 }
